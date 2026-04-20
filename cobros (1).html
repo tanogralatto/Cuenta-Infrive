@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Cobros">
+<meta name="theme-color" content="#f2f2ed">
+<title>Cobros</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f2ed;--white:#ffffff;--border:#e0e0d8;--border2:#c8c8c0;--text:#1a1a1a;--muted:#888880;--muted2:#555550;--green:#3a7d44;--green-bg:#eaf2eb;--red:#c0392b;--red-bg:#fdf0ee;--blue:#2563a8;--blue-bg:#eef4fb;--font:'Lato',sans-serif;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);--r:12px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden}
+.app{display:flex;flex-direction:column;height:100dvh}
+.header{flex-shrink:0;padding:calc(var(--safe-t) + 18px) 18px 14px;background:var(--bg)}
+.h-title{font-size:26px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.h-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.h-actions{display:flex;gap:8px;margin-top:12px}
+.btn-add{background:var(--green);color:#fff;border:none;border-radius:8px;font-family:var(--font);font-size:15px;font-weight:700;padding:10px 20px;cursor:pointer;transition:background .2s}
+.btn-add:hover{background:#2d6336}
+.tabs-wrap{flex-shrink:0;padding:0 18px 12px;background:var(--bg)}
+.tabs{display:inline-flex;background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:3px;gap:2px}
+.tab{font-family:var(--font);font-size:14px;font-weight:700;padding:8px 20px;border-radius:7px;cursor:pointer;border:none;background:none;color:var(--muted);transition:all .2s}
+.tab.on{background:var(--green);color:#fff}
+.summary{flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 18px 12px;background:var(--bg)}
+.sc{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.sc.g{background:var(--green-bg);border-color:#c8e2cc}
+.sc.r{background:var(--red-bg);border-color:#f0c8c4}
+.sc.b{background:var(--blue-bg);border-color:#c4d8f0}
+.sl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.sv{font-size:20px;font-weight:900;letter-spacing:-.5px;line-height:1;color:var(--text)}
+.sc.g .sv{color:var(--green)}.sc.r .sv{color:var(--red)}.sc.b .sv{color:var(--blue)}
+.ss{font-size:11px;color:var(--muted);margin-top:2px}
+.filter-wrap{flex-shrink:0;padding:0 18px 10px;background:var(--bg);display:flex;gap:6px;align-items:center}
+.fl{font-size:12px;color:var(--muted);white-space:nowrap;font-weight:700}
+.di{flex:1;background:var(--white);border:1.5px solid var(--border);border-radius:8px;font-family:var(--font);font-size:13px;color:var(--text);padding:8px 10px;outline:none;transition:border-color .2s}
+.di:focus{border-color:var(--green)}
+.xbtn{background:var(--white);border:1.5px solid var(--border);border-radius:8px;color:var(--muted);font-size:14px;padding:7px 10px;cursor:pointer;font-weight:700;transition:all .2s}
+.xbtn:hover{border-color:var(--red);color:var(--red)}
+.tw{flex:1;overflow-y:auto;padding:0 18px calc(var(--safe-b) + 16px)}
+.tw::-webkit-scrollbar{width:4px}
+.tw::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.msep{font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--green);padding:12px 0 6px;display:flex;align-items:center;gap:10px}
+.msep::after{content:'';flex:1;height:1.5px;background:var(--border)}
+.mtot{font-size:12px;color:var(--muted2);font-weight:700;letter-spacing:0;text-transform:none}
+.row{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:13px 14px;margin-bottom:7px;display:grid;align-items:start;gap:4px;transition:border-color .15s}
+.row:hover{border-color:var(--border2)}
+.row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.row-date{font-size:12px;font-weight:700;color:var(--muted2)}
+.row-amount{font-size:17px;font-weight:900;flex-shrink:0}
+.row-amount.cg{color:var(--green)}.row-amount.cb{color:var(--blue)}
+.row-desc{font-size:15px;font-weight:700;color:var(--text);line-height:1.3;margin-top:2px}
+.row-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.mpill{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:5px;display:inline-block}
+.mp-t{background:rgba(37,99,168,.1);color:var(--blue)}
+.mp-e{background:rgba(58,125,68,.1);color:var(--green)}
+.row-actions{display:flex;gap:5px}
+.abtn{background:none;border:1.5px solid var(--border2);border-radius:6px;color:var(--muted);font-size:12px;padding:4px 9px;cursor:pointer;transition:all .15s;font-family:var(--font);font-weight:700}
+.abtn.e:hover{border-color:#d4960f;color:#c8900a}
+.abtn.d:hover{border-color:var(--red);color:var(--red)}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:48px 24px}
+.empty-ico{font-size:48px;opacity:.25}
+.empty-t{font-size:18px;font-weight:900;color:var(--muted2)}
+.empty-s{font-size:13px;color:var(--muted);line-height:1.6}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+.modal{background:var(--white);border-radius:20px 20px 0 0;width:100%;max-width:500px;padding:22px 18px calc(var(--safe-b) + 22px);box-shadow:0 -4px 40px rgba(0,0,0,.12)}
+.mt2{font-size:22px;font-weight:900;color:var(--text);margin-bottom:18px;letter-spacing:-.3px}
+.fld{margin-bottom:12px}
+.flbl{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.finp{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:16px;padding:11px 13px;outline:none;transition:border-color .2s}
+.finp:focus{border-color:var(--green)}
+.finp.am{font-size:24px;font-weight:900;color:var(--green)}
+.fsel{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:16px;padding:11px 13px;outline:none;cursor:pointer}
+.fsel:focus{border-color:var(--green)}
+.mbtns{display:flex;gap:10px;margin-top:6px}
+.mbtn{flex:1;padding:14px;border-radius:10px;font-family:var(--font);font-size:16px;font-weight:900;cursor:pointer;border:none;transition:all .2s}
+.mbp{background:var(--green);color:#fff}.mbp:hover{background:#2d6336}
+.mbg{background:var(--bg);border:1.5px solid var(--border2);color:var(--muted2)}
+.co{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:20px}
+.co.open{display:flex}
+.cbox{background:var(--white);border-radius:16px;padding:24px;width:100%;max-width:320px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.15)}
+.ct{font-size:18px;font-weight:900;margin-bottom:8px}
+.cs{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+.cbtns{display:flex;gap:8px}
+.mbd{flex:1;padding:13px;border-radius:10px;font-family:var(--font);font-size:16px;font-weight:900;cursor:pointer;border:none;background:var(--red);color:#fff}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="h-title">Mis cobros</div>
+    <div class="h-sub" id="hSub">Cargando...</div>
+    <div class="h-actions">
+      <button class="btn-add" onclick="openModal()">+ Agregar</button>
+    </div>
+  </div>
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab on" id="tc" onclick="switchTab('cobros')">Cobros</button>
+      <button class="tab" id="tt" onclick="switchTab('trabajos')">Trabajos</button>
+    </div>
+  </div>
+  <div class="summary">
+    <div class="sc g"><div class="sl">Total cobrado</div><div class="sv" id="sCob">$ 0</div><div class="ss" id="sCobS">0 cobros</div></div>
+    <div class="sc b"><div class="sl">Total trabajos</div><div class="sv" id="sTrab">$ 0</div><div class="ss" id="sTrabS">0 trabajos</div></div>
+    <div class="sc" id="scSaldo"><div class="sl">Saldo</div><div class="sv" id="sSaldo">$ 0</div><div class="ss" id="sSaldoS">—</div></div>
+    <div class="sc"><div class="sl" id="filtLbl">En vista</div><div class="sv" id="sFilt">$ 0</div><div class="ss" id="sFiltS">—</div></div>
+  </div>
+  <div class="filter-wrap">
+    <span class="fl">Desde</span>
+    <input class="di" type="date" id="fFrom" onchange="render()">
+    <span class="fl">Hasta</span>
+    <input class="di" type="date" id="fTo" onchange="render()">
+    <button class="xbtn" onclick="clrF()">✕</button>
+  </div>
+  <div class="tw" id="tw"></div>
+</div>
+
+<div class="mo" id="mo">
+  <div class="modal">
+    <div class="mt2" id="mTit">Nuevo cobro</div>
+    <div class="fld"><div class="flbl">Fecha</div><input class="finp" type="date" id="iFecha"></div>
+    <div class="fld"><div class="flbl">Descripción</div><input class="finp" type="text" id="iDesc" placeholder="Ej: Cosecha La Catalina" autocomplete="off"></div>
+    <div class="fld"><div class="flbl">Monto ($)</div><input class="finp am" type="number" id="iMonto" placeholder="0" min="0" step="any"></div>
+    <div class="fld" id="mFld"><div class="flbl">Método de pago</div><select class="fsel" id="iMet"><option value="">Sin especificar</option><option value="transferencia">Transferencia</option><option value="efectivo">Efectivo</option></select></div>
+    <div class="mbtns"><button class="mbtn mbg" onclick="closeModal()">Cancelar</button><button class="mbtn mbp" onclick="saveItem()">Guardar</button></div>
+  </div>
+</div>
+
+<div class="co" id="co">
+  <div class="cbox">
+    <div class="ct">¿Borrar registro?</div>
+    <div class="cs" id="cDesc"></div>
+    <div class="cbtns"><button class="mbtn mbg" onclick="clrC()">Cancelar</button><button class="mbd" onclick="confDel()">Borrar</button></div>
+  </div>
+</div>
+
+<script>
+const CI=[{"id":"imp_1","fecha":"2025-01-03","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_2","fecha":"2025-01-09","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_3","fecha":"2025-01-17","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_4","fecha":"2025-01-23","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_5","fecha":"2025-02-01","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_6","fecha":"2025-02-09","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_7","fecha":"2025-02-22","desc":"Cobro","monto":600000,"metodo":"transferencia"},{"id":"imp_8","fecha":"2025-03-07","desc":"Cobro","monto":600000,"metodo":"transferencia"},{"id":"imp_9","fecha":"2025-03-15","desc":"Cobro","monto":300000,"metodo":"transferencia"},{"id":"imp_10","fecha":"2025-03-21","desc":"Cobro","monto":300000,"metodo":"transferencia"},{"id":"imp_11","fecha":"2025-03-28","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_12","fecha":"2025-04-04","desc":"Cobro","monto":700000,"metodo":"transferencia"},{"id":"imp_13","fecha":"2025-04-16","desc":"Cobro","monto":700000,"metodo":"transferencia"},{"id":"imp_14","fecha":"2025-04-26","desc":"Cobro","monto":700000,"metodo":"transferencia"},{"id":"imp_15","fecha":"2025-05-04","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_16","fecha":"2025-05-09","desc":"Cobro","monto":700000,"metodo":"transferencia"},{"id":"imp_17","fecha":"2025-05-20","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_18","fecha":"2025-05-23","desc":"Cobro","monto":300000,"metodo":"transferencia"},{"id":"imp_19","fecha":"2025-06-04","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_20","fecha":"2025-06-07","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_21","fecha":"2025-06-19","desc":"Cobro","monto":300000,"metodo":"transferencia"},{"id":"imp_22","fecha":"2025-06-27","desc":"Cobro","monto":700000,"metodo":"transferencia"},{"id":"imp_23","fecha":"2025-07-04","desc":"Cobro","monto":3000000,"metodo":"efectivo"},{"id":"imp_24","fecha":"2025-07-10","desc":"Cobro","monto":700000,"metodo":"efectivo"},{"id":"imp_25","fecha":"2025-07-18","desc":"Ver fecha","monto":700000,"metodo":"transferencia"},{"id":"imp_26","fecha":"2025-07-25","desc":"Cobro","monto":6000000,"metodo":"efectivo"},{"id":"imp_27","fecha":"2025-07-29","desc":"Cobro","monto":2000000,"metodo":"transferencia"},{"id":"imp_28","fecha":"2025-08-01","desc":"Cobro","monto":1000000,"metodo":"transferencia"},{"id":"imp_29","fecha":"2025-08-08","desc":"Cobro","monto":1000000,"metodo":"transferencia"},{"id":"imp_30","fecha":"2025-08-15","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_31","fecha":"2025-08-22","desc":"Cobro","monto":300000,"metodo":"efectivo"},{"id":"imp_32","fecha":"2025-08-29","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_33","fecha":"2025-09-05","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_34","fecha":"2025-09-19","desc":"Cobro","monto":200000,"metodo":"efectivo"},{"id":"imp_35","fecha":"2025-09-26","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_36","fecha":"2025-10-03","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_37","fecha":"2025-10-10","desc":"Cobro","monto":300000,"metodo":"transferencia"},{"id":"imp_38","fecha":"2025-10-24","desc":"Cobro","monto":300000,"metodo":"transferencia"},{"id":"imp_39","fecha":"2025-11-01","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_40","fecha":"2025-11-07","desc":"Cobro","monto":300000,"metodo":"efectivo"},{"id":"imp_41","fecha":"2025-11-16","desc":"Cobro","monto":300000,"metodo":"transferencia"},{"id":"imp_42","fecha":"2025-11-28","desc":"Cobro","monto":300000,"metodo":"transferencia"},{"id":"imp_43","fecha":"2025-12-12","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_44","fecha":"2025-12-19","desc":"Cobro","monto":200000,"metodo":"transferencia"},{"id":"imp_45","fecha":"2025-12-23","desc":"Cobro","monto":200000,"metodo":"efectivo"},{"id":"imp_46","fecha":"2026-01-09","desc":"Cobro","monto":1500000,"metodo":"transferencia"},{"id":"imp_47","fecha":"2026-01-16","desc":"Cobro","monto":2000000,"metodo":"transferencia"},{"id":"imp_48","fecha":"2026-01-24","desc":"Cobro","monto":2000000,"metodo":"transferencia"},{"id":"imp_49","fecha":"2026-01-31","desc":"Cobro","monto":1000000,"metodo":"transferencia"},{"id":"imp_50","fecha":"2026-02-07","desc":"Cobro","monto":2000000,"metodo":"transferencia"},{"id":"imp_51","fecha":"2026-03-04","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_52","fecha":"2026-03-06","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_53","fecha":"2026-03-20","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_54","fecha":"2026-03-28","desc":"Cobro","monto":500000,"metodo":"transferencia"},{"id":"imp_55","fecha":"2026-04-11","desc":"Cobro","monto":300000,"metodo":"transferencia"},{"id":"imp_56","fecha":"2026-04-19","desc":"Cobro","monto":500000,"metodo":"transferencia"}];
+const TI=[{"id":"trab_1","fecha":"2025-01-29","desc":"Arreglo 30 días galpón","monto":960000},{"id":"trab_2","fecha":"2025-03-28","desc":"Arreglo cosecha maíz La Catalina","monto":11500000},{"id":"trab_3","fecha":"2025-07-04","desc":"Cosecha soja La Catalina","monto":9595000},{"id":"trab_4","fecha":"2025-07-04","desc":"Cosecha soja Lobos 340 ha","monto":2805000},{"id":"trab_5","fecha":"2025-07-04","desc":"Cosecha maíz Maniceros 230 ha","monto":2000740},{"id":"trab_6","fecha":"","desc":"Siembra maíz La Catalina y Maniceros","monto":5510000}];
+
+let cobros=JSON.parse(localStorage.getItem('cv3')||'null')||[...CI];
+let trabajos=JSON.parse(localStorage.getItem('tv3')||'null')||[...TI];
+let tab='cobros',eId=null,eType=null,dId=null,dType=null;
+
+function sv(){localStorage.setItem('cv3',JSON.stringify(cobros));localStorage.setItem('tv3',JSON.stringify(trabajos));}
+function gId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function fP(n){return '$\u00a0'+Math.round(n).toLocaleString('es-AR');}
+function fD(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`;}
+function td(){return new Date().toISOString().slice(0,10);}
+function mKey(d){if(!d)return'';const[y,m]=d.split('-');const ms=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];return`${ms[parseInt(m)-1]} ${y}`;}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function switchTab(t){tab=t;document.getElementById('tc').classList.toggle('on',t==='cobros');document.getElementById('tt').classList.toggle('on',t==='trabajos');render();}
+function clrF(){document.getElementById('fFrom').value='';document.getElementById('fTo').value='';render();}
+function getFilt(l){const f=document.getElementById('fFrom').value,t=document.getElementById('fTo').value;return l.filter(c=>{if(f&&c.fecha&&c.fecha<f)return false;if(t&&c.fecha&&c.fecha>t)return false;return true;}).sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));}
+
+function render(){
+  const tc=cobros.reduce((s,c)=>s+parseFloat(c.monto||0),0);
+  const tt=trabajos.reduce((s,t)=>s+parseFloat(t.monto||0),0);
+  const sl=tt-tc;
+  document.getElementById('sCob').textContent=fP(tc);
+  document.getElementById('sCobS').textContent=cobros.length+' cobros';
+  document.getElementById('sTrab').textContent=fP(tt);
+  document.getElementById('sTrabS').textContent=trabajos.length+' trabajos';
+  document.getElementById('sSaldo').textContent=fP(Math.abs(sl));
+  document.getElementById('sSaldoS').textContent=sl>0?'por cobrar':sl<0?'a favor':'saldado';
+  const sc=document.getElementById('scSaldo');sc.className='sc '+(sl>0?'r':sl<0?'g':'');
+  const list=tab==='cobros'?cobros:trabajos;
+  const fil=getFilt(list);
+  const ft=fil.reduce((s,c)=>s+parseFloat(c.monto||0),0);
+  document.getElementById('sFilt').textContent=fP(ft);
+  document.getElementById('sFiltS').textContent=fil.length+' registro'+(fil.length!==1?'s':'');
+  document.getElementById('filtLbl').textContent=tab==='cobros'?'Cobros filtrados':'Trabajos filtrados';
+  const hasF=document.getElementById('fFrom').value||document.getElementById('fTo').value;
+  document.getElementById('hSub').textContent=cobros.length+' cobros · '+trabajos.length+' trabajos'+(hasF?' · filtro activo':'');
+  const wrap=document.getElementById('tw');
+  if(!fil.length){wrap.innerHTML='<div class="empty"><div class="empty-ico">'+(tab==='cobros'?'💰':'🔧')+'</div><div class="empty-t">'+(list.length?'Sin resultados':'Sin registros')+'</div><div class="empty-s">'+(list.length?'No hay registros en ese rango':'Tocá + Agregar para empezar')+'</div></div>';return;}
+  const grp={};fil.forEach(c=>{const k=mKey(c.fecha)||'Sin fecha';if(!grp[k])grp[k]=[];grp[k].push(c);});
+  let html='';
+  for(const[mo,items] of Object.entries(grp)){
+    const mt=items.reduce((s,c)=>s+parseFloat(c.monto||0),0);
+    html+='<div class="msep">'+mo+'<span class="mtot">'+fP(mt)+'</span></div>';
+    items.forEach(c=>{
+      const iC=tab==='cobros';
+      const pill=c.metodo==='transferencia'?'<span class="mpill mp-t">Transferencia</span>':c.metodo==='efectivo'?'<span class="mpill mp-e">Efectivo</span>':'';
+      html+='<div class="row"><div class="row-top"><div><div class="row-date">'+fD(c.fecha)+'</div><div class="row-desc">'+esc(c.desc)+'</div></div><div class="row-amount '+(iC?'cg':'cb')+'">'+fP(c.monto)+'</div></div>';
+      if(iC){html+='<div class="row-bottom"><div>'+(pill||'')+'</div><div class="row-actions"><button class="abtn e" onclick="openModal(\''+c.id+'\',\'cobros\')">Editar</button><button class="abtn d" onclick="askDel(\''+c.id+'\',\'cobros\')">Borrar</button></div></div>';}
+      html+='</div>';
+    });
+  }
+  wrap.innerHTML=html;
+}
+
+function openModal(id,type){eId=id||null;eType=type||tab;const iC=eType==='cobros';document.getElementById('mTit').textContent=id?(iC?'Editar cobro':'Editar trabajo'):(iC?'Nuevo cobro':'Nuevo trabajo');document.getElementById('mFld').style.display=iC?'block':'none';if(id){const l=iC?cobros:trabajos,c=l.find(x=>x.id===id);document.getElementById('iFecha').value=c.fecha||td();document.getElementById('iDesc').value=c.desc;document.getElementById('iMonto').value=c.monto;if(iC)document.getElementById('iMet').value=c.metodo||'';}else{document.getElementById('iFecha').value=td();document.getElementById('iDesc').value='';document.getElementById('iMonto').value='';if(iC)document.getElementById('iMet').value='';}document.getElementById('mo').classList.add('open');setTimeout(()=>document.getElementById('iDesc').focus(),300);}
+function closeModal(){document.getElementById('mo').classList.remove('open');eId=null;}
+function saveItem(){const fecha=document.getElementById('iFecha').value,desc=document.getElementById('iDesc').value.trim(),monto=parseFloat(document.getElementById('iMonto').value),metodo=document.getElementById('iMet').value,iC=eType==='cobros';if(!fecha){alert('Ingresá una fecha');return;}if(!desc){alert('Ingresá una descripción');return;}if(isNaN(monto)||monto<=0){alert('Ingresá un monto válido');return;}const list=iC?cobros:trabajos;if(eId){const idx=list.findIndex(c=>c.id===eId);list[idx]={...list[idx],fecha,desc,monto,...(iC?{metodo}:{})};}else{list.push({id:gId(),fecha,desc,monto,...(iC?{metodo}:{})});}sv();closeModal();render();}
+function askDel(id,type){dId=id;dType=type;const l=type==='cobros'?cobros:trabajos,c=l.find(x=>x.id===id);document.getElementById('cDesc').textContent='"'+c.desc+'" — '+fP(c.monto);document.getElementById('co').classList.add('open');}
+function clrC(){document.getElementById('co').classList.remove('open');dId=null;}
+function confDel(){if(dType==='cobros')cobros=cobros.filter(c=>c.id!==dId);else trabajos=trabajos.filter(c=>c.id!==dId);sv();clrC();render();}
+document.getElementById('mo').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+document.getElementById('co').addEventListener('click',e=>{if(e.target===e.currentTarget)clrC();});
+document.getElementById('iMonto').addEventListener('keydown',e=>{if(e.key==='Enter')saveItem();});
+render();
+</script>
+</body>
+</html>
