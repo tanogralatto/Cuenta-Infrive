@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cobros">
+<meta name="theme-color" content="#0c0c0c">
+<title>Cobros</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0c0c;--s1:#141414;--s2:#1c1c1c;--border:#2e2e2e;--border2:#3a3a3a;--text:#f0f0f0;--muted:#5a5a5a;--muted2:#7a7a7a;--green:#b8ff6e;--green2:#7acc3a;--red:#ff6b6b;--yellow:#ffd166;--blue:#6eb5ff;--mono:'Inconsolata',monospace;--display:'Syne',sans-serif;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--mono);overflow:hidden}
+.app{display:flex;flex-direction:column;height:100dvh}
+.header{flex-shrink:0;padding:calc(var(--safe-t) + 12px) 16px 12px;background:var(--s1);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--display);font-size:20px;font-weight:800;letter-spacing:-.5px}
+.logo span{color:var(--green)}
+.summary{flex-shrink:0;display:flex;background:var(--s1);border-bottom:1px solid var(--border)}
+.sum-card{flex:1;padding:12px 14px;border-right:1px solid var(--border)}
+.sum-card:last-child{border-right:none}
+.sum-label{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px}
+.sum-val{font-family:var(--display);font-size:17px;font-weight:800;letter-spacing:-.5px}
+.sum-val.g{color:var(--green)}.sum-val.y{color:var(--yellow)}.sum-val.b{color:var(--blue)}
+.sum-sub{font-size:9px;color:var(--muted);margin-top:2px}
+.tabs{flex-shrink:0;display:flex;background:var(--s1);border-bottom:1px solid var(--border)}
+.tab{flex:1;padding:11px;font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;text-align:center}
+.tab.on{color:var(--green);border-bottom-color:var(--green)}
+.filter-bar{flex-shrink:0;padding:8px 14px;background:var(--s1);border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center}
+.fl{font-size:10px;color:var(--muted);white-space:nowrap}
+.date-inp{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:11px;padding:5px 8px;outline:none;flex:1;min-width:100px}
+.date-inp:focus{border-color:var(--green)}
+.clr-btn{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 5px}
+.clr-btn:hover{color:var(--red)}
+.msel{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:11px;padding:5px 8px;outline:none}
+.list-wrap{flex:1;overflow-y:auto;padding:10px 14px 80px;display:flex;flex-direction:column;gap:7px}
+.list-wrap::-webkit-scrollbar{width:3px}
+.list-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:40px 24px}
+.empty-ico{font-size:44px;opacity:.2}
+.empty-t{font-family:var(--display);font-size:16px;font-weight:700;color:var(--muted2)}
+.empty-s{font-size:11px;color:var(--muted);line-height:1.6;max-width:220px}
+.msep{font-family:var(--display);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:4px 0 2px;display:flex;align-items:center;gap:8px}
+.msep::after{content:'';flex:1;height:1px;background:var(--border)}
+.mtot{font-size:10px;color:var(--muted2);font-family:var(--mono);font-weight:400;letter-spacing:0}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:7px;overflow:hidden;transition:border-color .15s}
+.card:hover{border-color:var(--border2)}
+.card-main{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cl{flex:1;min-width:0}
+.cdate{font-size:9px;color:var(--muted);letter-spacing:.5px;margin-bottom:2px}
+.cdesc{font-family:var(--display);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.camount{font-family:var(--display);font-size:16px;font-weight:800;letter-spacing:-.3px}
+.camount.cg{color:var(--green)}.camount.cy{color:var(--yellow)}
+.cactions{display:flex;gap:3px}
+.abtn{background:none;border:1px solid var(--border);border-radius:3px;color:var(--muted);font-size:12px;padding:4px 7px;cursor:pointer;transition:all .15s}
+.abtn.e:hover{border-color:var(--yellow);color:var(--yellow)}
+.abtn.d:hover{border-color:var(--red);color:var(--red)}
+.mpill{display:inline-block;font-size:8px;letter-spacing:.5px;text-transform:uppercase;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px}
+.mt{background:rgba(110,181,255,.15);color:var(--blue)}
+.me{background:rgba(255,209,102,.15);color:var(--yellow)}
+.fab{position:fixed;bottom:calc(var(--safe-b) + 18px);right:18px;width:52px;height:52px;border-radius:50%;background:var(--green);border:none;font-size:26px;color:#000;cursor:pointer;box-shadow:0 4px 18px rgba(184,255,110,.3);transition:all .2s;display:flex;align-items:center;justify-content:center;font-weight:700}
+.fab:hover{transform:scale(1.08)}.fab:active{transform:scale(.95)}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;align-items:flex-end;justify-content:center}
+.mo.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:14px 14px 0 0;width:100%;max-width:480px;padding:18px 18px calc(var(--safe-b) + 18px)}
+.mt2{font-family:var(--display);font-size:17px;font-weight:800;margin-bottom:16px}
+.fld{margin-bottom:12px}
+.flbl{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.finp{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:13px;padding:10px 12px;outline:none;transition:border-color .2s}
+.finp:focus{border-color:var(--green)}
+.finp.ag{font-family:var(--display);font-size:19px;font-weight:700;color:var(--green)}
+.finp.ay{font-family:var(--display);font-size:19px;font-weight:700;color:var(--yellow)}
+.fsel{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:13px;padding:10px 12px;outline:none;cursor:pointer}
+.mbtns{display:flex;gap:8px;margin-top:4px}
+.btn{flex:1;padding:12px;border-radius:5px;font-family:var(--display);font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;border:none;transition:all .2s}
+.bp{background:var(--green);color:#000}.bp:hover{background:var(--green2)}
+.bpy{background:var(--yellow);color:#000}
+.bg2{background:none;border:1px solid var(--border);color:var(--muted)}
+.bg2:hover{border-color:var(--border2);color:var(--text)}
+.co{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;align-items:center;justify-content:center;padding:18px}
+.co.open{display:flex}
+.cbox{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:20px;width:100%;max-width:300px;text-align:center}
+.ct{font-family:var(--display);font-size:16px;font-weight:700;margin-bottom:6px}
+.cs{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.cbtns{display:flex;gap:8px}
+.bd{flex:1;padding:12px;border-radius:5px;font-family:var(--display);font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--red);color:#000}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">cobro<span>s</span></div>
+    <div style="font-size:9px;color:var(--muted)" id="hSub"></div>
+  </div>
+  <div class="summary">
+    <div class="sum-card"><div class="sum-label">Cobrado</div><div class="sum-val g" id="sCobrado">$ 0</div><div class="sum-sub" id="sCobradoS">0 cobros</div></div>
+    <div class="sum-card"><div class="sum-label">Trabajos</div><div class="sum-val y" id="sTrabajos">$ 0</div><div class="sum-sub" id="sTrabajosS">0 trabajos</div></div>
+    <div class="sum-card"><div class="sum-label">Saldo</div><div class="sum-val b" id="sSaldo">$ 0</div><div class="sum-sub" id="sSaldoS">pendiente</div></div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" id="tc" onclick="switchTab('cobros')">💰 COBROS</button>
+    <button class="tab" id="tt" onclick="switchTab('trabajos')">🔧 TRABAJOS</button>
+  </div>
+  <div class="filter-bar">
+    <span class="fl">Desde</span>
+    <input class="date-inp" type="date" id="fFrom" onchange="render()">
+    <span class="fl">Hasta</span>
+    <input class="date-inp" type="date" id="fTo" onchange="render()">
+    <select class="msel" id="fMet" onchange="render()" style="display:none">
+      <option value="">Todos</option>
+      <option value="transferencia">Transf.</option>
+      <option value="efectivo">Efectivo</option>
+    </select>
+    <button class="clr-btn" onclick="clrFilter()">×</button>
+  </div>
+  <div class="list-wrap" id="lw"></div>
+</div>
+
+<button class="fab" onclick="openModal()">+</button>
+
+<div class="mo" id="mo">
+  <div class="modal">
+    <div class="mt2" id="mTitle">Nuevo cobro</div>
+    <div class="fld"><div class="flbl">Fecha</div><input class="finp" type="date" id="iFecha"></div>
+    <div class="fld"><div class="flbl">Descripción</div><input class="finp" type="text" id="iDesc" placeholder="Ej: Cosecha La Catalina" autocomplete="off"></div>
+    <div class="fld"><div class="flbl">Monto ($)</div><input class="finp ag" type="number" id="iMonto" placeholder="0" min="0" step="any"></div>
+    <div class="fld" id="mFld"><div class="flbl">Método de pago</div><select class="fsel" id="iMet"><option value="">Sin especificar</option><option value="transferencia">Transferencia</option><option value="efectivo">Efectivo</option></select></div>
+    <div class="mbtns"><button class="btn bg2" onclick="closeModal()">CANCELAR</button><button class="btn bp" id="sBtn" onclick="saveItem()">GUARDAR</button></div>
+  </div>
+</div>
+
+<div class="co" id="co">
+  <div class="cbox">
+    <div class="ct">¿Borrar?</div>
+    <div class="cs" id="cDesc"></div>
+    <div class="cbtns"><button class="btn bg2" onclick="clrConfirm()">CANCELAR</button><button class="bd" onclick="confirmDel()">BORRAR</button></div>
+  </div>
+</div>
+
+<script>
+const CI=[{"id":"imp_1","fecha":"2025-01-03","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_2","fecha":"2025-01-09","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_3","fecha":"2025-01-17","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_4","fecha":"2025-01-23","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_5","fecha":"2025-02-01","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_6","fecha":"2025-02-09","desc":"Cobro","monto":300000,"metodo":""},{"id":"imp_7","fecha":"2025-02-22","desc":"Cobro (transferencia)","monto":600000,"metodo":"transferencia"},{"id":"imp_8","fecha":"2025-03-07","desc":"Cobro (transferencia)","monto":600000,"metodo":"transferencia"},{"id":"imp_9","fecha":"2025-03-15","desc":"Cobro (transferencia)","monto":300000,"metodo":"transferencia"},{"id":"imp_10","fecha":"2025-03-21","desc":"Cobro (transferencia)","monto":300000,"metodo":"transferencia"},{"id":"imp_11","fecha":"2025-03-28","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_12","fecha":"2025-04-04","desc":"Cobro (transferencia)","monto":700000,"metodo":"transferencia"},{"id":"imp_13","fecha":"2025-04-16","desc":"Cobro (transferencia)","monto":700000,"metodo":"transferencia"},{"id":"imp_14","fecha":"2025-04-26","desc":"Cobro (transferencia)","monto":700000,"metodo":"transferencia"},{"id":"imp_15","fecha":"2025-05-04","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_16","fecha":"2025-05-09","desc":"Cobro (transferencia)","monto":700000,"metodo":"transferencia"},{"id":"imp_17","fecha":"2025-05-20","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_18","fecha":"2025-05-23","desc":"Cobro (transferencia)","monto":300000,"metodo":"transferencia"},{"id":"imp_19","fecha":"2025-06-04","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_20","fecha":"2025-06-07","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_21","fecha":"2025-06-19","desc":"Cobro (transferencia)","monto":300000,"metodo":"transferencia"},{"id":"imp_22","fecha":"2025-06-27","desc":"Cobro (transferencia)","monto":700000,"metodo":"transferencia"},{"id":"imp_23","fecha":"2025-07-04","desc":"Cobro (efectivo)","monto":3000000,"metodo":"efectivo"},{"id":"imp_24","fecha":"2025-07-10","desc":"Cobro (efectivo)","monto":700000,"metodo":"efectivo"},{"id":"imp_25","fecha":"2025-07-18","desc":"ver fecha bien","monto":700000,"metodo":"transferencia"},{"id":"imp_26","fecha":"2025-07-25","desc":"Cobro (efectivo)","monto":6000000,"metodo":"efectivo"},{"id":"imp_27","fecha":"2025-07-29","desc":"Cobro (transferencia)","monto":2000000,"metodo":"transferencia"},{"id":"imp_28","fecha":"2025-08-01","desc":"Cobro (transferencia)","monto":1000000,"metodo":"transferencia"},{"id":"imp_29","fecha":"2025-08-08","desc":"Cobro (transferencia)","monto":1000000,"metodo":"transferencia"},{"id":"imp_30","fecha":"2025-08-15","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_31","fecha":"2025-08-22","desc":"Cobro (efectivo)","monto":300000,"metodo":"efectivo"},{"id":"imp_32","fecha":"2025-08-29","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_33","fecha":"2025-09-05","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_34","fecha":"2025-09-19","desc":"Cobro (efectivo)","monto":200000,"metodo":"efectivo"},{"id":"imp_35","fecha":"2025-09-26","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_36","fecha":"2025-10-03","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_37","fecha":"2025-10-10","desc":"Cobro (transferencia)","monto":300000,"metodo":"transferencia"},{"id":"imp_38","fecha":"2025-10-24","desc":"Cobro (transferencia)","monto":300000,"metodo":"transferencia"},{"id":"imp_39","fecha":"2025-11-01","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_40","fecha":"2025-11-07","desc":"Cobro (efectivo)","monto":300000,"metodo":"efectivo"},{"id":"imp_41","fecha":"2025-11-16","desc":"Cobro (transferencia)","monto":300000,"metodo":"transferencia"},{"id":"imp_42","fecha":"2025-11-28","desc":"Cobro (transferencia)","monto":300000,"metodo":"transferencia"},{"id":"imp_43","fecha":"2025-12-12","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_44","fecha":"2025-12-19","desc":"Cobro (transferencia)","monto":200000,"metodo":"transferencia"},{"id":"imp_45","fecha":"2025-12-23","desc":"Cobro (efectivo)","monto":200000,"metodo":"efectivo"},{"id":"imp_46","fecha":"2026-01-09","desc":"Cobro (transferencia)","monto":1500000,"metodo":"transferencia"},{"id":"imp_47","fecha":"2026-01-16","desc":"Cobro (transferencia)","monto":2000000,"metodo":"transferencia"},{"id":"imp_48","fecha":"2026-01-24","desc":"Cobro (transferencia)","monto":2000000,"metodo":"transferencia"},{"id":"imp_49","fecha":"2026-01-31","desc":"Cobro (transferencia)","monto":1000000,"metodo":"transferencia"},{"id":"imp_50","fecha":"2026-02-07","desc":"Cobro (transferencia)","monto":2000000,"metodo":"transferencia"},{"id":"imp_51","fecha":"2026-03-04","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_52","fecha":"2026-03-06","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_53","fecha":"2026-03-20","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_54","fecha":"2026-03-28","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"},{"id":"imp_55","fecha":"2026-04-11","desc":"Cobro (transferencia)","monto":300000,"metodo":"transferencia"},{"id":"imp_56","fecha":"2026-04-19","desc":"Cobro (transferencia)","monto":500000,"metodo":"transferencia"}];
+const TI=[{"id":"trab_1","fecha":"2025-01-29","desc":"ARREGLO DE 30 DIAS GALPON","monto":960000},{"id":"trab_2","fecha":"2025-03-28","desc":"ARREGLO DE COSECHA DE MAIZ LA CATALINA","monto":11500000},{"id":"trab_3","fecha":"2025-07-04","desc":"COSECHA DE SOJA LA CATALINA","monto":9595000},{"id":"trab_4","fecha":"2025-07-04","desc":"COSECHA DE SOJA LOBOS 340 ha","monto":2805000},{"id":"trab_5","fecha":"2025-07-04","desc":"COSECHA DE MAÍZ MANICEROS 230 ha","monto":2000740},{"id":"trab_6","fecha":"","desc":"SIEMBRA DE MAIZ LA CATALINA Y MANICEROS","monto":5510000}];
+
+let cobros=JSON.parse(localStorage.getItem('c_v2')||'null')||[...CI];
+let trabajos=JSON.parse(localStorage.getItem('t_v2')||'null')||[...TI];
+let tab='cobros',eId=null,eType=null,dId=null,dType=null;
+
+function sv(){localStorage.setItem('c_v2',JSON.stringify(cobros));localStorage.setItem('t_v2',JSON.stringify(trabajos));}
+function gId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function fP(n){return '$ '+Math.round(n).toLocaleString('es-AR');}
+function fD(d){if(!d)return '—';const[y,m,day]=d.split('-');return `${day}/${m}/${y}`;}
+function td(){return new Date().toISOString().slice(0,10);}
+function mKey(d){if(!d)return'';const[y,m]=d.split('-');const ms=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];return `${ms[parseInt(m)-1]} ${y}`;}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function switchTab(t){
+  tab=t;
+  document.getElementById('tc').classList.toggle('on',t==='cobros');
+  document.getElementById('tt').classList.toggle('on',t==='trabajos');
+  document.getElementById('fMet').style.display=t==='cobros'?'block':'none';
+  render();
+}
+
+function clrFilter(){document.getElementById('fFrom').value='';document.getElementById('fTo').value='';document.getElementById('fMet').value='';render();}
+
+function getFilt(list){
+  const f=document.getElementById('fFrom').value,t=document.getElementById('fTo').value,m=document.getElementById('fMet').value;
+  return list.filter(c=>{
+    if(f&&c.fecha&&c.fecha<f)return false;
+    if(t&&c.fecha&&c.fecha>t)return false;
+    if(m&&c.metodo!==m)return false;
+    return true;
+  }).sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
+}
+
+function render(){
+  const tc=cobros.reduce((s,c)=>s+parseFloat(c.monto||0),0);
+  const tt=trabajos.reduce((s,t)=>s+parseFloat(t.monto||0),0);
+  const sl=tt-tc;
+  document.getElementById('sCobrado').textContent=fP(tc);
+  document.getElementById('sCobradoS').textContent=`${cobros.length} cobros`;
+  document.getElementById('sTrabajos').textContent=fP(tt);
+  document.getElementById('sTrabajosS').textContent=`${trabajos.length} trabajos`;
+  document.getElementById('sSaldo').textContent=fP(Math.abs(sl));
+  document.getElementById('sSaldoS').textContent=sl>0?'por cobrar':sl<0?'a favor':'saldado';
+  document.getElementById('hSub').textContent=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
+
+  const wrap=document.getElementById('lw');
+  const list=tab==='cobros'?cobros:trabajos;
+  const fil=getFilt(list);
+
+  if(!fil.length){
+    wrap.innerHTML=`<div class="empty"><div class="empty-ico">${tab==='cobros'?'💰':'🔧'}</div><div class="empty-t">SIN ${tab==='cobros'?'COBROS':'TRABAJOS'}</div><div class="empty-s">${list.length?'No hay registros en ese rango':'Tocá el + para agregar'}</div></div>`;
+    return;
+  }
+
+  const grp={};
+  fil.forEach(c=>{const k=mKey(c.fecha)||'Sin fecha';if(!grp[k])grp[k]=[];grp[k].push(c);});
+
+  let html='';
+  for(const[mo,items] of Object.entries(grp)){
+    const mt=items.reduce((s,c)=>s+parseFloat(c.monto||0),0);
+    html+=`<div class="msep">${mo}<span class="mtot">${fP(mt)}</span></div>`;
+    items.forEach(c=>{
+      const iC=tab==='cobros';
+      const pill=c.metodo==='transferencia'?`<span class="mpill mt">transf</span>`:c.metodo==='efectivo'?`<span class="mpill me">efectivo</span>`:'';
+      html+=`<div class="card"><div class="card-main">
+        <div class="cl"><div class="cdate">${fD(c.fecha)}${pill}</div><div class="cdesc">${esc(c.desc)}</div></div>
+        <div class="cr">
+          <div class="camount ${iC?'cg':'cy'}">${fP(c.monto)}</div>
+          <div class="cactions">
+            <button class="abtn e" onclick="openModal('${c.id}','${tab}')">✏️</button>
+            <button class="abtn d" onclick="askDel('${c.id}','${tab}')">🗑</button>
+          </div>
+        </div>
+      </div></div>`;
+    });
+  }
+  wrap.innerHTML=html;
+}
+
+function openModal(id,type){
+  eId=id||null;eType=type||tab;
+  const iC=eType==='cobros';
+  document.getElementById('mTitle').textContent=id?(iC?'Editar cobro':'Editar trabajo'):(iC?'Nuevo cobro':'Nuevo trabajo');
+  document.getElementById('mFld').style.display=iC?'block':'none';
+  document.getElementById('iMonto').className='finp '+(iC?'ag':'ay');
+  document.getElementById('sBtn').className='btn '+(iC?'bp':'bpy');
+  if(id){
+    const l=iC?cobros:trabajos,c=l.find(x=>x.id===id);
+    document.getElementById('iFecha').value=c.fecha;
+    document.getElementById('iDesc').value=c.desc;
+    document.getElementById('iMonto').value=c.monto;
+    if(iC)document.getElementById('iMet').value=c.metodo||'';
+  }else{
+    document.getElementById('iFecha').value=td();
+    document.getElementById('iDesc').value='';
+    document.getElementById('iMonto').value='';
+    if(iC)document.getElementById('iMet').value='';
+  }
+  document.getElementById('mo').classList.add('open');
+  setTimeout(()=>document.getElementById('iDesc').focus(),300);
+}
+
+function closeModal(){document.getElementById('mo').classList.remove('open');eId=null;}
+
+function saveItem(){
+  const fecha=document.getElementById('iFecha').value;
+  const desc=document.getElementById('iDesc').value.trim();
+  const monto=parseFloat(document.getElementById('iMonto').value);
+  const metodo=document.getElementById('iMet').value;
+  const iC=eType==='cobros';
+  if(!fecha){alert('Ingresá una fecha');return;}
+  if(!desc){alert('Ingresá una descripción');return;}
+  if(isNaN(monto)||monto<=0){alert('Ingresá un monto válido');return;}
+  const list=iC?cobros:trabajos;
+  if(eId){const idx=list.findIndex(c=>c.id===eId);list[idx]={...list[idx],fecha,desc,monto,...(iC?{metodo}:{})};}
+  else{list.push({id:gId(),fecha,desc,monto,...(iC?{metodo}:{})});}
+  sv();closeModal();render();
+}
+
+function askDel(id,type){
+  dId=id;dType=type;
+  const l=type==='cobros'?cobros:trabajos,c=l.find(x=>x.id===id);
+  document.getElementById('cDesc').textContent=`"${c.desc}" — ${fP(c.monto)}`;
+  document.getElementById('co').classList.add('open');
+}
+function clrConfirm(){document.getElementById('co').classList.remove('open');dId=null;}
+function confirmDel(){
+  if(dType==='cobros')cobros=cobros.filter(c=>c.id!==dId);
+  else trabajos=trabajos.filter(c=>c.id!==dId);
+  sv();clrConfirm();render();
+}
+
+document.getElementById('mo').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+document.getElementById('co').addEventListener('click',e=>{if(e.target===e.currentTarget)clrConfirm();});
+document.getElementById('iMonto').addEventListener('keydown',e=>{if(e.key==='Enter')saveItem();});
+render();
+</script>
+</body>
+</html>
